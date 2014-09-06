@@ -1,0 +1,19 @@
+/$pifs_icons.i
+
+//Icons for PocketIFS
+//(c) 2001 T.Frogley
+
+#ifndef pifs_icons
+#define pifs_icons
+
+#define ROTATE "091c0220010010210620fc0600200"
+
+#define MOVE "09200700f80200220230ff8230220"
+
+#define SCALE "09000000018898bd8898018000000"
+
+#define HAPPY "091c0220550948808a285d02201c0"
+
+#define LOCK "090003c0660420ff0810bd08107e0"
+
+#endif //pifs_icons

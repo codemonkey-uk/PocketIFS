@@ -1,0 +1,35 @@
+/$profile.i
+
+#ifndef PROFILE_I_INCLUDED
+#define PROFILE_I_INCLUDED
+
+int profile_starttime;
+int profile_operations;
+
+Profile_Start()
+{
+  profile_operations=0;
+  profile_starttime=ticks();
+}
+Profile_Stop()
+{
+  int time;
+  time=ticks()-profile_starttime;
+  puts(
+    profile_operations + 
+    " operations in " +
+    time + 
+    " ticks.\n");
+  if (time>profile_operations){
+    puts(" = " + 
+      (float)time/profile_operations + 
+      " ticks per operation" );
+  }
+  else{
+    puts(" = " + 
+      (float)profile_operations/time + 
+      " operations per tick.\n" );
+  }
+}
+
+#endif

@@ -1,0 +1,20 @@
+/$pifs_text.i
+
+//Text messages for PocketIFS
+//(c) 2001 T.Frogley
+
+#ifndef pifs_text
+#define pifs_text
+
+#define APPNAME "PocketIFS"
+#define VERSION " v0.3d"
+#define MEMOID "PocketIFSfile"
+#define REV_DATE "13/03/2001"
+#define NOMATHLIBMSG "PocketIFS requires 'mathlib' to run."
+#define INTERRUPTMSG "Interrupt?"
+#define SAVE2MEMOMSG "Save to memo?"
+#define LOADMEMOMSG (APPNAME+" memo exists, load?")
+#define CONFIRMDELETEMSG (APPNAME +" memo exists, delete?")
+#define LOADFAILMSG (APPNAME+" memo load failed!")
+
+#endif//pifs_text

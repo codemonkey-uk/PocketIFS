@@ -1,0 +1,93 @@
+PocketIFS 0.3d (c) T.Frogley 2001
+email codemonkey_uk@hotmail.com
+
+Copyright
+---------
+
+PocketIFS is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published 
+by the Free Software Foundation; either version 2 of the License, 
+or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; (gpl.txt) if not, write to:
+  The Free Software Foundation, Inc., 
+  59 Temple Place, 
+  Suite 330, 
+  Boston, 
+  MA  02111-1307  
+  USA
+
+Install
+-------
+PocketIFS is a PocketC applet, and requires the PocketC runtime to work.
+The PocketC runtime is freely avaiable from http://www.orbworks.com/
+Once PocketC is installed simply upload PocketIFS.PDB to your handheld 
+device, to run PocketIFS run PocketC then select PocketIFS and press 
+"Execute".
+
+PocketIFS v0.3d was tested using PocketC v3.92
+
+Use (v0.3) +
+------------
+
+This is an early version of PocketIFS which lets you play with 
+IFS's, more information on IFS can be found on the web.  This 
+document briefly describes how to use the PocketIFS applet.
+
+1) When PocketIFS starts you are presented with a licence alert.  
+(Feel free to remove it for personal use, but it must be present
+if you distribute [copy & give to others] it).
+Press OK to continue.
+
+2) You are now in 'draw' mode, click using the pen to define the corners
+of a shape, draw mode will be over once you have created a closed polygon.
+
+3) Now you are in transform mode, which has 5 buttons at the top, 
+from right to left they are:
+
+  1) Rotate.
+  2) Scale
+  3) Move.
+  4) Lock.
+  5) Happy.
+
+The first three are the three basic transformations that can be done, 
+each stage starts on pen down, and ends on pen up.
+
+Whist the pen is down you deform (a copy of) the original shape,
+on the X and Y axis independently by moving the pen up & down, 
+and left & right.
+
+You can lock XY for rotation and scale using the Lock icon.
+
+Once you are happy, select the happy face icon, which will confirm your 
+selection.  Once you have confirmed that you are finished you will be 
+asked if you want Another, if you say yes you will be returned to
+transform mode with a new copy of the shape (and so create multiple 
+transformations).
+
+Once you have created all the transformations you want (only do one first 
+time, I've never usefully used more than 3) PocketIFS will draw your fractal 
+by recursively applying the transformations.
+
+Enjoy!
+
+New in 0.3d
+-----------
+Improved program efficiency for faster rendering.
+Fixed a bug that occurred when compiling the fixed depth plotter under PocketC v3.92
+Added profiling support to source code.
+
+New in 0.3c
+-----------
+IO bug fix, distribution tidy up.
+
+New in 0.3a
+-----------
+Minor interface bug fixes

@@ -1,0 +1,99 @@
+//PocketIFS
+//(c) T.Frogley 2001
+
+//config
+#define NOISY
+//#define PROFILE
+//#define RECURSIVE_DEPTH 5
+
+#ifdef PROFILE
+#include "profile.i"
+#endif
+
+#include "pifs_text.i"
+#include "GNUGPL"
+
+#include "ifs.i"
+
+main()
+{
+	pointer ifs,s,t,p;
+	string msg;
+	int loaded;
+
+	clear();
+	msg=GNUGPLmsgEnglish(
+	  APPNAME, VERSION,
+	  REV_DATE, "T. Frogley");
+	puts(msg+'\n');
+
+	if (!mathlib()){
+		alert(NOMATHLIBMSG);
+		return;
+	}
+
+	graph_on();
+	title(APPNAME+VERSION);
+
+	alert(msg);
+
+	loaded = 0;
+	if (mmfind(MEMOID)){
+	  if (confirm(LOADMEMOMSG))
+	  {
+	    mmgetl();
+	    s = ReadShapeFromMemo();
+	    if (s){
+	      t=ReadTransFromMemo();
+	      if (t) loaded = 1;
+	      else DeletePoint(s);
+	    }
+	    if (!loaded)
+	      alert(LOADFAILMSG);
+	  }
+	}
+
+	if (s==0){
+	  s=GetShape();
+	  ELOShape(s);
+	  CenterShape(s);
+	}
+	if (t==0){
+	  p=t=GetTrans(s);
+	  while(confirm("Another?")){
+	    p[t_next] = GetTrans(s);
+	    p=p[t_next];
+	  }
+	}
+	
+	ifs = NewIFS(s,t);
+	clearg();
+	Draw(ifs,
+	  cos(0),
+	  -sin(0),
+	  sin(0),
+	  cos(0),
+	  0,0);
+
+#ifdef NOISY
+	beep(1);
+#endif
+
+#ifdef RECURSIVE_DEPTH
+	waitp();
+#endif
+
+	if (loaded == 0){
+	  if (confirm(SAVE2MEMOMSG))
+		SaveIFS(s,t);
+#ifdef NOISY
+		beep(1);
+#endif
+	}
+
+	waitp();
+
+	graph_off();
+
+	DeleteIFS(ifs);
+}

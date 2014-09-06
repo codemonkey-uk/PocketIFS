@@ -1,0 +1,225 @@
+/$shape.i
+//(c) T.Frogley 2001
+
+#ifndef shape_i
+#define shape_i
+
+DrawX(int c, int x, int y, int l)
+{line(c,x-l,y-l,x+l,y+l);
+line(c,x-l,y+l,x+l,y-l);}
+
+#define p_x 0
+#define p_y 1
+#define p_next 2
+#define sizeof_p 3
+
+int centre_x;
+int centre_y;
+
+pointer NewPoint(int x, int y)
+{
+	pointer result;
+	result = malloc(sizeof_p);
+	if (result){
+		result[p_x]=x;
+		result[p_y]=y;
+		result[p_next]=0;
+	}
+	return result;
+}
+
+DeletePoint(pointer p)
+{
+	pointer t;
+	do{
+	  t = p[p_next];
+	  free(p);
+	}while(p=t);
+}
+
+pointer GetPoint()
+{
+	pointer result;
+	waitp();
+	result = NewPoint(
+		penx(), peny()
+	);
+	return result;
+}
+
+DrawLine(
+  pointer cur,
+  int c)
+{
+	pointer next;
+	next=cur[p_next];
+	line(c,cur[p_x]+centre_x,
+	  cur[p_y]+centre_y,
+	  next[p_x]+centre_x,
+	  next[p_y]+centre_y);
+}
+
+float Dist(pointer a,pointer b)
+{
+	return sqrt(
+	  ((a[p_x]-b[p_x])*
+	   (a[p_x]-b[p_x]))+ 
+	  ((a[p_y]-b[p_y])*
+	   (a[p_y]-b[p_y]))
+	);
+}
+
+float Length(pointer a)
+{
+	float l;
+	l = 0;
+	do{
+		if (a[p_next]) 
+		  l = l + Dist(a,a[p_next]);
+	}while(a = a[p_next]);
+	return l;
+}
+
+//shape
+#define s_cx 0
+#define s_cy 1
+#define s_points 2
+#define sizeof_s 3
+/*
+CenterShape(pointer sh)
+{
+	int i;
+	pointer s;
+	i =sh[s_cy]=sh[s_cx]=0;
+	s=sh;
+	do{
+		sh[s_cx] = sh[s_cx]+s[p_x];
+		sh[s_cy] = sh[s_cy]+s[p_y];
+		i++;
+		s=s[p_next];
+	}while(s);
+	sh[s_cx]=sh[s_cx]/i;
+	sh[s_cy]=sh[s_cy]/i;
+	s=sh;
+	do{
+		s[p_x]=s[p_x]-sh[s_cx];
+		s[p_y]=s[p_y]-sh[s_cy];
+		s = s[p_next];
+	}while(s);
+}
+*/
+
+CenterShape(pointer sh)
+{
+	int i;
+	pointer s;
+	i =centre_y=centre_x=0;
+	s=sh;
+	do{
+	  centre_x = centre_x+s[p_x];
+	  centre_y = centre_y+s[p_y];
+	  i++;
+	}while(s=s[p_next]);
+	centre_x=centre_x/i;
+	centre_y=centre_y/i;
+	s=sh;
+	do{
+		s[p_x]=s[p_x]-centre_x;
+		s[p_y]=s[p_y]-centre_y;
+	}while(s = s[p_next]);
+}
+
+//end-line optimise shape
+ELOShape(pointer p)
+{
+	pointer a,b,c;
+	a=b=c=0;
+	do{
+		c=b;
+		b=a;
+		a = p;
+	}while(p = p[p_next]);
+	if (c){
+		if(a[p_x]==c[p_x] &&
+		     a[p_y]==c[p_y]){
+		  free(a);
+		  b[p_next]=0;
+		}
+	}
+}
+
+DrawShape(
+  pointer cur, int col)
+{
+	do{
+		DrawLine(cur,col);
+		cur = cur[p_next];
+	}while(cur[p_next]);
+}
+
+WriteShapeToMemo(pointer cur)
+{
+	mmputs(centre_x+"\n");
+	mmputs(centre_y+"\n");
+	do{
+		mmputs(
+		  cur[p_x]+"\n"+
+		  cur[p_y]+"\n");
+		cur = cur[p_next];
+	}while(cur);
+	mmputs("!\n");
+}
+
+pointer ReadShapeFromMemo()
+{
+	pointer head,cur;
+	string x,y;
+	centre_x=mmgetl();
+	centre_y=mmgetl();
+	x=mmgetl();
+	y=mmgetl();
+
+	if (mmeof()>0) return 0;
+
+	head=cur=NewPoint(x,y);
+
+	x=mmgetl();
+	while(cur && x!="!"){
+		y=mmgetl();
+		if (mmeof()>0){
+			DeletePoint(head);
+			return 0;
+		}
+		cur[p_next]=
+		  NewPoint(x,y);
+		DrawLine(cur,1);
+		cur=cur[p_next];
+		x=mmgetl();
+	}
+	return head;
+}
+
+pointer GetShape()
+{
+	pointer head,cur,next;
+	centre_y=centre_x=0;
+	cur = head = GetPoint();
+	DrawX(1,cur[p_x],
+		cur[p_y],1);
+	do{
+		do{
+			next=cur[p_next]=
+			  GetPoint();
+		}while(Length(cur)<4);
+		if (Dist(head,next)<4){
+		  next[p_x]=head[p_x];
+		  next[p_y]=head[p_y];
+		}
+		cur[p_next] = next;
+		DrawLine(cur, 1);
+		cur = cur[p_next];
+	}while(Dist(head,next)>4);
+	return head;
+}
+
+#endif shape_i

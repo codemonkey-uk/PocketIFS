@@ -1,0 +1,268 @@
+/$trans.i
+#ifndef trans_i
+#define trans_i
+
+//trans
+#define t_a 0
+#define t_b 1
+#define t_c 2
+#define t_d 3
+#define t_e 4
+#define t_f 5
+#define t_next 6
+#define sizeof_t 7
+
+pointer NewTrans( 
+  float a, float b, float c,float d, 
+  float e, float f)
+{
+	pointer p;	
+	if (p = malloc(sizeof_t)){
+		settype(p,6,'f');
+		p[t_a]=a;
+		p[t_b]=b;
+		p[t_c]=c;
+		p[t_d]=d;
+		p[t_e]=e;
+		p[t_f]=f;
+		p[t_next]=0;
+	}
+	return p;
+}
+pointer NewTrans2()
+{
+	pointer p;	
+	if (p = malloc(sizeof_t)){
+		settype(p,6,'f');
+	}
+	return p;
+}
+
+DeleteTrans(pointer p)
+{
+	pointer  t;
+	do{
+	  t = p[t_next];
+	  free(p);
+	}while(p=t);
+}
+
+WriteTransToMemo(pointer p)
+{
+  do{
+    mmputs(
+      p[t_a]+"\n"+
+      p[t_b]+"\n"+
+      p[t_c]+"\n"+
+      p[t_d]+"\n"+
+      p[t_e]+"\n"+
+      p[t_f]+"\n");
+  }while(p = p[t_next]);
+  mmputs("!\n");
+}
+
+pointer ReadTransFromMemo()
+{
+	pointer head,cur;
+	string a,b,c,d,e,f;
+	a=mmgetl();
+	b=mmgetl();
+	c=mmgetl();
+	d=mmgetl();
+	e=mmgetl();
+	f=mmgetl();
+
+	if (mmeof()>0) return 0;
+
+	head=cur=
+	  NewTrans(a,b,c,d,e,f);
+	a=mmgetl();
+	while(cur && a!="!"){
+		b=mmgetl();
+		c=mmgetl();
+		d=mmgetl();
+		e=mmgetl();
+		f=mmgetl();
+		if (mmeof()>0){
+			DeleteTrans(head);
+			return 0;
+		}
+		cur[t_next]=
+		  NewTrans(a,b,c,d,e,f);
+		cur=cur[t_next];
+		a=mmgetl();
+	}
+	return head;
+}
+
+DrawLineTrans(
+  pointer cur,
+  float a, float b, float c, float d, 
+  float e, float f,
+  int col)
+{
+  pointer nxt;
+  nxt = cur[p_next];
+  line(
+    col,
+    cur[p_x]*a + 
+      cur[p_y]*b +
+      e + centre_x,
+    cur[p_x]*c + 
+      cur[p_y]*d + 
+      f + centre_y,
+    nxt[p_x]*a +
+      nxt[p_y]*b +
+      e + centre_x,
+    nxt[p_x]*c +
+      nxt[p_y]*d +
+      f + centre_y
+  );
+}
+
+DrawShapeTrans(
+  pointer cur,
+  float a, float b, float c,float d, 
+  float e, float f,
+  int col)
+{
+  pointer nxt;
+  int x1,y1,x2,y2;
+  nxt = cur[p_next];
+  x2 = cur[p_x]*a + 
+      cur[p_y]*b +
+      e + centre_x;
+  y2 = cur[p_x]*c + 
+      cur[p_y]*d + 
+      f + centre_y;
+  do{
+    x1=x2; y1=y2;
+    x2 = nxt[p_x]*a +
+      nxt[p_y]*b +
+      e + centre_x;
+    y2 = nxt[p_x]*c +
+      nxt[p_y]*d +
+      f + centre_y;
+    line(col,x1, y1,x2, y2);
+    cur = nxt;
+  }while(nxt = nxt[p_next]);
+}
+
+#include "pifs_icons.i"
+
+Toggle(int mode)
+{
+	rect(3,160-(mode+1)*10,1,
+	  159-mode*10,10,
+	  0);
+}
+
+pointer GetTrans(pointer head)
+{
+	float p,q,r,s,e,f;
+	float a,b,c,d;
+	int oldmode,cx,cy,px,py;
+	int mode;
+	int lock;
+
+	bitmap(160-10,1,ROTATE);
+	bitmap(160-20,1,SCALE);
+	bitmap(160-30,1,MOVE);
+	bitmap(160-40,1,LOCK);
+	bitmap(160-50,1,HAPPY);
+
+	p=q=0;
+	r=s=1;
+
+	Toggle(mode);
+
+	while(event(1)!=2);
+	cy=peny();
+	cx=penx();
+
+	do{
+
+	py=peny();
+	if (lock) px=py;
+	else px=penx();
+
+	if (mode==0){
+		q =(float)(py-cy)
+		  *7/160;
+		p =(float)(px-cx)
+		  *7/160;
+	}
+	else if (mode==1){
+		s = (float)(py-cy)
+		  /80;
+		r = (float)(px-cx)
+		  /80;
+	}
+	else{
+		e=penx()-cx;
+		f=peny()-cy;
+	}
+
+	a = r * cos(p);
+	b = -s * sin(q);
+	c = r * sin(p);
+	d = s * cos(q);
+	DrawShapeTrans(head,
+	  a, b,  c, d, e, f,
+	  3);
+	if (event(1)==3){
+
+		do{
+		  while(event(1)!=2);
+		  cx = penx();
+		  cy = peny();
+		  if (cy<=10){
+		    if (cx>=110){
+		      Toggle(mode);
+	 	      oldmode=mode;
+	 	      mode = (159-cx)/10;
+		      Toggle(mode);
+		      if(mode==3){
+		        lock=!lock;
+		        mode=oldmode;
+		       Toggle(mode);     
+		      }
+		    }
+		  }
+		  else break;
+		}while(mode!=4);
+
+		if (mode==4){
+		  Toggle(mode);
+		  mode = oldmode;
+		  Toggle(mode);
+		  if (confirm("Happy?"))
+		    break;
+		}
+		if (lock) cx=cy;
+		if (mode==0){
+			cx = cx - p/7*160;
+			cy = cy - q/7*160;
+		}
+		else if (mode==1){
+			cx = cx - r*80;
+			cy = cy - s*80;
+		}
+		else{
+			cx=penx()-e;
+			cy=peny()-f;
+		}
+	}
+	DrawShapeTrans(head,
+	  a, b,  c, d, e, f,
+	  3);
+	}while(1);
+	DrawShapeTrans(head,
+	  a, b,  c, d, e, f,
+	  1);
+	Toggle(mode);
+	return 
+	  NewTrans(a, b, c, d, e, f);
+}
+
+#endif//trans_i
