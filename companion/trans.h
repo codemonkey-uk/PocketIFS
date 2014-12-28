@@ -1,4 +1,5 @@
-//trans.i
+//trans.h
+// C/C++ port from PocketC of trans.i from PocketIFS
 //(c) T.Frogley 2015
 
 #ifndef trans_i

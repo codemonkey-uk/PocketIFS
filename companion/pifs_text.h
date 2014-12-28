@@ -1,7 +1,7 @@
-//pifs_text.i
-
-//Text messages for PocketIFS
-//(c) 2015 T.Frogley
+// pifs_text.h
+// Text messages from PocketIFS
+// C/C++ port from PocketC of pifs_text.i from PocketIFS
+// (c) 2015 T.Frogley
 
 #ifndef pifs_text
 #define pifs_text

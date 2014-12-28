@@ -1,5 +1,6 @@
-//ifs.i
-//(c) T.Frogley 2015
+// ifs.h
+// C/C++ port from PocketC of ifs.i from PocketIFS
+// (c) T.Frogley 2015
 
 #ifndef ifs_i
 #define ifs_i

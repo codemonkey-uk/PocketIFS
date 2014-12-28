@@ -1,4 +1,5 @@
 //shape.h
+// C/C++ port from PocketC of shape.i from PocketIFS
 //(c) T.Frogley 2015
 
 #ifndef shape_h
@@ -29,7 +30,6 @@ inline string getline(std::istream& i)
 
 inline void line(int c, int x1, int y1, int x2, int y2)
 {
-    // cout << c << endl;
     cout << x1 << "," << y1 << " " << x2 << "," << y2 << endl;
 }
 
