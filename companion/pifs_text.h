@@ -9,7 +9,7 @@
 #define APPNAME "PocketIFS"
 #define VERSION " v0.3d"
 #define MEMOID "PocketIFSfile"
-#define REV_DATE "13/03/2001"
+#define REV_DATE __DATE__
 #define NOMATHLIBMSG "PocketIFS requires 'mathlib' to run."
 #define INTERRUPTMSG "Interrupt?"
 #define SAVE2MEMOMSG "Save to memo?"

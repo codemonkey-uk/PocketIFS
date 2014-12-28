@@ -13,7 +13,7 @@ int depth = 6;
 #endif
 
 #include "pifs_text.h"
-//#include "GNUGPL"
+#include "GNUGPL.h"
 
 #include "ifs.h"
 
@@ -43,13 +43,12 @@ int main(int argc, char** argv)
         if (d!=0) depth=d;
     }
 
-    /*
-	msg=GNUGPLmsgEnglish(
-	  APPNAME, VERSION,
-	  REV_DATE, "T. Frogley");
+    msg=GNUGPLmsgEnglish(
+      APPNAME, VERSION,
+      REV_DATE, "T. Frogley");
 
-	alert(msg);
-    */
+    alert(msg);
+
     loaded = 0;
 
     std::string h;

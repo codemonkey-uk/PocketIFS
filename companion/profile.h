@@ -28,7 +28,7 @@ void Profile_Stop()
   if (time>profile_operations){
     std::cerr << " = " <<
       (float)time/profile_operations <<
-      " ticks per operation";
+      " ticks per operation\n";
   }
   else{
     std::cerr << " = " <<
