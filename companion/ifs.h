@@ -119,11 +119,12 @@ void DrawT(pointer_ifs ifs,
 
 inline void DrawR(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f, int level)
+  float e, float f, int level, bool just_leaf)
 {
 	float a1,b1,c1,d1,e1,f1;
 	pointer_t trans;
 
+	if (level==0 || just_leaf==false)
 	DrawShapeTrans(ifs->ifs_shape,
 	  a, b, c, d, e, f,
 	  1);
@@ -153,7 +154,7 @@ inline void DrawR(pointer_ifs ifs,
 	    +f;
 	  DrawR(ifs,
 	    a1, b1, c1, d1, e1, f1,
-	    level-1);
+	    level-1, just_leaf);
 	  trans = trans->t_next;
 	}while(trans);
 }
@@ -164,7 +165,7 @@ inline void DrawR(pointer_ifs ifs,
 
 void Draw(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f, int mode, int mode_arg)
+  float e, float f, int mode, int mode_arg, bool just_leaf)
 {
 #ifdef PROFILE
 Profile_Start();
@@ -178,7 +179,7 @@ Profile_Start();
   else
   {
       DrawR(ifs,a,b,c,d,e,f,
-        mode_arg);
+        mode_arg, just_leaf);
   }
 
 #ifdef PROFILE
@@ -186,17 +187,4 @@ Profile_Stop();
 #endif
 }
 
-/*
-SaveIFS(pointer s, pointer t)
-{
-	if (mmfind(MEMOID)){
-	if (confirm(CONFIRMDELETEMSG
-	)) mmdelete();else return;}
-
-	mmnew();
-	mmputs(MEMOID + "\n");
-	WriteShapeToMemo(s);
-	WriteTransToMemo(t);
-}
-*/
 #endif//ifs_i

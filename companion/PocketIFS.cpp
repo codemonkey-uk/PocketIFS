@@ -3,7 +3,6 @@
 // (c) T.Frogley 2015
 
 // TODO:
-// * Add leaf-only drawing mode for recursive mode
 // * Add number of iterations as argument for iterative mode
 // * Integrated SVG / output format modes / rasterised pixel output
 
@@ -46,6 +45,7 @@ int main(int argc, char** argv)
 
     int mode = default_mode;
     int mode_arg = default_depth;
+    bool just_leaf = false;
 
     // read mode and mode-argument from commandline
     int state = 0;
@@ -59,17 +59,20 @@ int main(int argc, char** argv)
         {
             if (*c=='r' || *c=='d') mode = MODE_RECURSIVE;
             if (*c=='t') mode = MODE_TIMED;
+            if (strcmp("leaf", c)==0) just_leaf = true;
             state = mode;
         }
         else if (state == MODE_RECURSIVE)
         {
             mode_arg = atoi(c);
             cerr << "Rendering (recursive) to depth: " << mode_arg << endl;
+            state = MODE_NONE;
         }
         else if (state == MODE_TIMED)
         {
             mode_arg = (int) (atof(c) * CLOCKS_PER_SEC);
             cerr << "Rendering (iterative) for " << (float)mode_arg/CLOCKS_PER_SEC << "s" << endl;
+            state = MODE_NONE;
         }
     }
 
@@ -96,7 +99,7 @@ int main(int argc, char** argv)
       sin(0),
       cos(0),
       0,0,
-      mode, mode_arg);
+      mode, mode_arg, just_leaf);
 
     DeleteIFS(ifs);
 }

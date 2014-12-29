@@ -23,7 +23,7 @@ Example 1 (c) 1999 Joe Shmoe
 Example is free software, & comes with ABSOLUTELY NO WARRANTY.
 See the terms of the GNU General Public License for details.
 */
-std::string GNUGPLmsgEnglish(
+inline std::string GNUGPLmsgEnglish(
   std::string name,
   std::string ver,
   std::string date,
