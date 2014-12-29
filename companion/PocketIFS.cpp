@@ -3,16 +3,13 @@
 // (c) T.Frogley 2015
 
 // TODO:
-// * Time limited iteration to replace Palm OS interactive mode
-// * Leaf-only drawing mode for recursive
+// * Add leaf-only drawing mode for recursive mode
+// * Add number of iterations as argument for iterative mode
 // * Combining line segments into poly-lines
 // * Integrated SVG / output format modes / rasterised pixel output
 
 //config
 #define PROFILE
-
-int depth = 6;
-#define RECURSIVE_DEPTH depth
 
 #ifdef PROFILE
 #include "profile.h"
@@ -42,18 +39,43 @@ int main(int argc, char** argv)
     std::string msg;
     int loaded;
 
-    // read recursive depth from commandline
-    if (argc>1)
-    {
-        int d = atoi(argv[1]);
-        if (d>=0) depth=d;
-    }
-
     msg=GNUGPLmsgEnglish(
       APPNAME, VERSION,
       REV_DATE, "T. Frogley");
 
     alert(msg);
+
+    int default_mode = MODE_RECURSIVE;
+    int default_depth = 6;
+
+    int mode = default_mode;
+    int mode_arg = default_depth;
+
+    // read mode and mode-argument from commandline
+    int state = 0;
+    for (int i=1; i!=argc; ++i)
+    {
+        const char* c = argv[i];
+        if (*c=='-') c++;
+        if (*c=='-') c++;
+
+        if (state == MODE_NONE)
+        {
+            if (*c=='r' || *c=='d') mode = MODE_RECURSIVE;
+            if (*c=='t') mode = MODE_TIMED;
+            state = mode;
+        }
+        else if (state == MODE_RECURSIVE)
+        {
+            mode_arg = atoi(c);
+            cerr << "Rendering (recursive) to depth: " << mode_arg << endl;
+        }
+        else if (state == MODE_TIMED)
+        {
+            mode_arg = (int) (atof(c) * CLOCKS_PER_SEC);
+            cerr << "Rendering (iterative) for " << (float)mode_arg/CLOCKS_PER_SEC << "s" << endl;
+        }
+    }
 
     loaded = 0;
 
@@ -77,7 +99,8 @@ int main(int argc, char** argv)
       -sin(0),
       sin(0),
       cos(0),
-      0,0);
+      0,0,
+      mode, mode_arg);
 
     DeleteIFS(ifs);
 }

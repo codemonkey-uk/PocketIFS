@@ -35,19 +35,18 @@ inline void DeleteIFS(pointer_ifs p)
 	free(p);
 }
 
-#ifndef RECURSIVE_DEPTH
-Draw(pointer ifs,
+void DrawT(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f)
+  float e, float f, clock_t limit_t)
 {
-	pointer head;
-	pointer t,s;
-	pointer head,tail;
-	pointer shape;
-	pointer trans;
+	pointer_t t,s;
+	pointer_t head,tail;
+	pointer_s shape;
+	pointer_t trans;
 
-	shape = ifs[ifs_shape];
-	trans = ifs[ifs_trans];
+	clock_t start_t = clock();
+	shape = ifs->ifs_shape;
+	trans = ifs->ifs_trans;
 
 	tail = head =
 	  NewTrans(a,b, c,d,e,f);
@@ -55,18 +54,11 @@ Draw(pointer ifs,
 	//empty
 	s = NewTrans2();
 
-	//eat up events
-	while(event(0));
-
-#ifdef PROFILE
-Profile_Start();
-#endif
-
 	do{
-	  DrawShapeTrans(shape,
-	    head[t_a], head[t_b],
-	    head[t_c], head[t_d],
-	    head[t_e], head[t_f],
+	  DrawShapeTrans(shape->s_points,
+	    head->t_a, head->t_b,
+	    head->t_c, head->t_d,
+	    head->t_e, head->t_f,
 	    1);
 
 #ifdef PROFILE
@@ -75,66 +67,56 @@ Profile_Start();
 #endif
 
 	  t=trans;
-	  s[t_a]=(t[t_a]*head[t_a])
-	    +(t[t_c]*head[t_b]);
-	  s[t_b]=(t[t_b]*head[t_a])
-	    +(t[t_d]*head[t_b]);
-	  s[t_c]=(t[t_a]*head[t_c])
-	    +(t[t_c]*head[t_d]);
-	  s[t_d]=(t[t_b]*head[t_c])
-	    +(t[t_d]*head[t_d]);
-	  s[t_e]=(t[t_e]*head[t_a])
-	    +(t[t_f]*head[t_b])
-	    +head[t_e];
-	  s[t_f]=(t[t_e]*head[t_c])
-	    +(t[t_f]*head[t_d])
-	    +head[t_f];
-	  s[t_next] = 0;
-	  tail[t_next] = s;
+	  s->t_a=(t->t_a*head->t_a)
+	    +(t->t_c*head->t_b);
+	  s->t_b=(t->t_b*head->t_a)
+	    +(t->t_d*head->t_b);
+	  s->t_c=(t->t_a*head->t_c)
+	    +(t->t_c*head->t_d);
+	  s->t_d=(t->t_b*head->t_c)
+	    +(t->t_d*head->t_d);
+	  s->t_e=(t->t_e*head->t_a)
+	    +(t->t_f*head->t_b)
+	    +head->t_e;
+	  s->t_f=(t->t_e*head->t_c)
+	    +(t->t_f*head->t_d)
+	    +head->t_f;
+	  s->t_next = 0;
+	  tail->t_next = s;
 	  tail = s;
 
-	  while(t = t[t_next]){
-	    tail[t_next] = NewTrans(
-	      (t[t_a]*head[t_a])
-	        +(t[t_c]*head[t_b]),
-	      (t[t_b]*head[t_a])
-	        +(t[t_d]*head[t_b]),
-	      (t[t_a]*head[t_c])
-	        +(t[t_c]*head[t_d]),
-	      (t[t_b]*head[t_c])
-	        +(t[t_d]*head[t_d]),
-	      (t[t_e]*head[t_a])
-	        +(t[t_f]*head[t_b])
-	        +head[t_e],
-	      (t[t_e]*head[t_c])
-	        +(t[t_f]*head[t_d])
-	        +head[t_f]
+	  while((t = t->t_next)){
+	    tail->t_next = NewTrans(
+	      (t->t_a*head->t_a)
+	        +(t->t_c*head->t_b),
+	      (t->t_b*head->t_a)
+	        +(t->t_d*head->t_b),
+	      (t->t_a*head->t_c)
+	        +(t->t_c*head->t_d),
+	      (t->t_b*head->t_c)
+	        +(t->t_d*head->t_d),
+	      (t->t_e*head->t_a)
+	        +(t->t_f*head->t_b)
+	        +head->t_e,
+	      (t->t_e*head->t_c)
+	        +(t->t_f*head->t_d)
+	        +head->t_f
 	    );
-	    if (tail[t_next])
-	      tail = tail[t_next];
+	    if (tail->t_next)
+	      tail = tail->t_next;
 	  }
 
-	  if(event(0))
-#ifndef PROFILE
-	    if (confirm(INTERRUPTMSG))
-	      break;
-	    else //eat events
-	      while(event(0));
-#else
-	      break;
-#endif
-	  s = head;
-	}while(head = head[t_next]);
+	  clock_t elapsed_t = clock() - start_t;
+	  if(elapsed_t > limit_t)
+	    break;
 
-#ifdef PROFILE
-Profile_Stop();
-#endif
+	  s = head;
+	}while((head = head->t_next));
 
 	//free memory
-	if (s) free(s);
- 	if (head) DeleteTrans(head);
+ 	if (s) DeleteTrans(s);
 }
-#else //if RECURSIVE_DEPTH
+
 inline void DrawR(pointer_ifs ifs,
   float a, float b, float c,float d,
   float e, float f, int level)
@@ -175,22 +157,35 @@ inline void DrawR(pointer_ifs ifs,
 	  trans = trans->t_next;
 	}while(trans);
 }
+
+#define MODE_NONE 0
+#define MODE_RECURSIVE 1
+#define MODE_TIMED 2
+
 void Draw(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f)
+  float e, float f, int mode, int mode_arg)
 {
 #ifdef PROFILE
 Profile_Start();
 #endif
 
-  DrawR(ifs,a,b,c,d,e,f,
-    RECURSIVE_DEPTH);
+  if (mode == MODE_TIMED)
+  {
+      DrawT(ifs,a,b,c,d,e,f,
+        mode_arg);
+  }
+  else
+  {
+      DrawR(ifs,a,b,c,d,e,f,
+        mode_arg);
+  }
 
 #ifdef PROFILE
 Profile_Stop();
 #endif
 }
-#endif//RECURSIVE_DEPTH
+
 /*
 SaveIFS(pointer s, pointer t)
 {
