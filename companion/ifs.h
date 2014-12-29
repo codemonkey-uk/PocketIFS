@@ -47,7 +47,7 @@ Draw(pointer ifs,
 	pointer trans;
 
 	shape = ifs[ifs_shape];
-            trans = ifs[ifs_trans];
+	trans = ifs[ifs_trans];
 
 	tail = head =
 	  NewTrans(a,b, c,d,e,f);
@@ -151,7 +151,7 @@ inline void DrawR(pointer_ifs ifs,
 	  =profile_operations+1;
 #endif
 
-	if (level<0) return;
+	if (level<=0) return;
 	trans = ifs->ifs_trans;
 
 	do{

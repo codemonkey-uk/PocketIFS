@@ -2,6 +2,12 @@
 // C/C++ port from PocketC of PocketIFS
 // (c) T.Frogley 2015
 
+// TODO:
+// * Time limited iteration to replace Palm OS interactive mode
+// * Leaf-only drawing mode for recursive
+// * Combining line segments into poly-lines
+// * Integrated SVG / output format modes / rasterised pixel output
+
 //config
 #define PROFILE
 
@@ -40,7 +46,7 @@ int main(int argc, char** argv)
     if (argc>1)
     {
         int d = atoi(argv[1]);
-        if (d!=0) depth=d;
+        if (d>=0) depth=d;
     }
 
     msg=GNUGPLmsgEnglish(

@@ -207,7 +207,7 @@ inline pointer_s ReadShapeFromCin()
 	cin >> x;
 	cin >> y;
 
-	// if (!cin.good()) return 0;
+	if (!cin.good()) return 0;
 
 	head=cur=NewPoint(atoi(x.c_str()),atof(y.c_str()));
 
@@ -215,13 +215,11 @@ inline pointer_s ReadShapeFromCin()
 	while(cur && x!="!"){
 		y = getline(cin);
 		if (!cin.good()){
-			//DeletePoint(head);
-			//return 0;
-			break;
+			DeletePoint(head);
+			return 0;
 		}
 		cur->p_next=
 		  NewPoint(atoi(x.c_str()),atof(y.c_str()));
-		DrawLine(cur,1);
 		cur=cur->p_next;
 		cin >> x;
 	}

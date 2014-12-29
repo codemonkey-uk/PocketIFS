@@ -153,7 +153,7 @@ void DrawShapeTrans(
     y2 = nxt->p_x*c +
       nxt->p_y*d +
       f + centre_y;
-    line(col,x1, y1,x2, y2);
+    line(col, x1, y1, x2, y2);
     cur = nxt;
   }while((nxt = nxt->p_next));
 }
