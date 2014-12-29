@@ -28,17 +28,6 @@ inline string getline(std::istream& i)
    return s;
 }
 
-inline void line(int c, int x1, int y1, int x2, int y2)
-{
-    cout << x1 << "," << y1 << " " << x2 << "," << y2 << endl;
-}
-
-inline void DrawX(int c, int x, int y, int l)
-{
-    line(c,x-l,y-l,x+l,y+l);
-    line(c,x-l,y+l,x+l,y-l);
-}
-
 struct p
 {
     int p_x;
@@ -49,9 +38,6 @@ struct p
 #define sizeof_p sizeof(p)
 
 typedef p* pointer_p;
-
-extern int centre_x;
-extern int centre_y;
 
 inline pointer_p NewPoint(int x, int y)
 {
@@ -72,30 +58,6 @@ inline void DeletePoint(pointer_p p)
 	  t = p->p_next;
 	  free(p);
 	}while((p=t));
-}
-
-/*
-inline pointer GetPoint()
-{
-	pointer result;
-	waitp();
-	result = NewPoint(
-		penx(), peny()
-	);
-	return result;
-}
-*/
-
-inline void DrawLine(
-  pointer_p cur,
-  int c)
-{
-	pointer_p next;
-	next=cur->p_next;
-	line(c,cur->p_x+centre_x,
-	  cur->p_y+centre_y,
-	  next->p_x+centre_x,
-	  next->p_y+centre_y);
 }
 
 float Dist(pointer_p a,pointer_p b)
@@ -136,6 +98,7 @@ inline void DeleteShape(pointer_s s)
     DeletePoint(s->s_points);
     free(s);
 }
+
 /*
 void CenterShape(pointer_s sh)
 {
@@ -177,33 +140,26 @@ void ELOShape(pointer_p p)
 }
 */
 
-void DrawShape(
-  pointer_p cur, int col)
+inline void WriteShapeToCout(pointer_s s)
 {
-	do{
-		DrawLine(cur,col);
-		cur = cur->p_next;
-	}while(cur->p_next);
-}
-
-void WriteShapeToCout(pointer_p cur)
-{
-	cout << centre_x << endl;
-	cout << centre_y << endl;
+	cout << s->s_cx << endl;
+	cout << s->s_cx << endl;
+	pointer_p cur = s->s_points;
 	do{
 		cout << cur->p_x << endl;
 		cout << cur->p_y << endl;
 		cur = cur->p_next;
 	}while(cur);
-	printf("!\n");
+	cout << "!\n";
 }
 
 inline pointer_s ReadShapeFromCin()
 {
 	pointer_p head,cur;
 	string x,y;
-	cin >> centre_x;
-	cin >> centre_y;
+	int cx, cy;
+	cin >> cx;
+	cin >> cy;
 	cin >> x;
 	cin >> y;
 
@@ -227,32 +183,9 @@ inline pointer_s ReadShapeFromCin()
 	pointer_s result;
 	result=(pointer_s)malloc(sizeof_p);
 	result->s_points=head;
-	result->s_cx=centre_x;
-	result->s_cy=centre_y;
+	result->s_cx=cx;
+	result->s_cy=cy;
 	return result;
 }
-/*
-pointer GetShape()
-{
-	pointer head,cur,next;
-	centre_y=centre_x=0;
-	cur = head = GetPoint();
-	DrawX(1,cur->p_x,
-		cur->p_y,1);
-	do{
-		do{
-			next=cur[p_next]=
-			  GetPoint();
-		}while(Length(cur)<4);
-		if (Dist(head,next)<4){
-		  next[p_x]=head[p_x];
-		  next[p_y]=head[p_y];
-		}
-		cur[p_next] = next;
-		DrawLine(cur, 1);
-		cur = cur[p_next];
-	}while(Dist(head,next)>4);
-	return head;
-}
-*/
+
 #endif // shape_i

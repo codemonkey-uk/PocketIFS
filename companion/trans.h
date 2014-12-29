@@ -37,6 +37,7 @@ pointer_t NewTrans(
 	}
 	return p;
 }
+
 pointer_t NewTrans2()
 {
 	pointer_t p;
@@ -80,7 +81,7 @@ inline pointer_t ReadTransFromCin()
 	cin >> e;
 	cin >> f;
 
-	// if (!cin.good()) return 0;
+	if (!cin.good()) return 0;
 
 	head=cur=
 	  NewTrans(atof(a.c_str()),b,c,d,e,f);
@@ -92,9 +93,8 @@ inline pointer_t ReadTransFromCin()
 		cin >> e;
 		cin >> f;
 		if (!cin.good()){
-			//DeleteTrans(head);
-			//return 0;
-			break;
+			DeleteTrans(head);
+			return 0;
 		}
 		cur->t_next=
 		  NewTrans(atof(a.c_str()),b,c,d,e,f);
@@ -104,58 +104,53 @@ inline pointer_t ReadTransFromCin()
 	return head;
 }
 
-inline void DrawLineTrans(
-  pointer_p cur,
-  float a, float b, float c, float d,
-  float e, float f,
-  int col)
-{
-  pointer_p nxt;
-  nxt = cur->p_next;
-  line(
-    col,
-    cur->p_x*a +
-      cur->p_y*b +
-      e + centre_x,
-    cur->p_x*c +
-      cur->p_y*d +
-      f + centre_y,
-    nxt->p_x*a +
-      nxt->p_y*b +
-      e + centre_x,
-    nxt->p_x*c +
-      nxt->p_y*d +
-      f + centre_y
-  );
-}
-
 void DrawShapeTrans(
-  pointer_p cur,
+  pointer_s s,
   float a, float b, float c,float d,
   float e, float f,
   int col)
 {
+  pointer_p cur;
   pointer_p nxt;
   int x1,y1,x2,y2;
+
+  cur = s->s_points;
   nxt = cur->p_next;
 
   x2 = cur->p_x*a +
       cur->p_y*b +
-      e + centre_x;
+      e + s->s_cx;
   y2 = cur->p_x*c +
       cur->p_y*d +
-      f + centre_y;
+      f + s->s_cy;
+
+  // initial point in line
+  int n = 1;
+  cout << x2 << "," << y2;
+
   do{
     x1=x2; y1=y2;
     x2 = nxt->p_x*a +
       nxt->p_y*b +
-      e + centre_x;
+      e + s->s_cx;
     y2 = nxt->p_x*c +
       nxt->p_y*d +
-      f + centre_y;
-    line(col, x1, y1, x2, y2);
+      f + s->s_cy;
+
+    // skip points in line on same pixel as last
+    if (x2!=x1 || y2!=y1)
+    {
+        n++;
+        cout << " " << x2 << "," << y2;
+    }
+
     cur = nxt;
   }while((nxt = nxt->p_next));
+
+  // single pixel line (point) still needs start & end pair
+  if (n==1) cout << " " << x2 << "," << y2;
+
+  cout << endl;
 }
 
 /*

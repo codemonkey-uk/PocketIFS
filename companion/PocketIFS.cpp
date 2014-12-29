@@ -5,7 +5,6 @@
 // TODO:
 // * Add leaf-only drawing mode for recursive mode
 // * Add number of iterations as argument for iterative mode
-// * Combining line segments into poly-lines
 // * Integrated SVG / output format modes / rasterised pixel output
 
 //config
@@ -19,9 +18,6 @@
 #include "GNUGPL.h"
 
 #include "ifs.h"
-
-int centre_x = 0;
-int centre_y = 0;
 
 using std::cerr;
 

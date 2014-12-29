@@ -55,7 +55,7 @@ void DrawT(pointer_ifs ifs,
 	s = NewTrans2();
 
 	do{
-	  DrawShapeTrans(shape->s_points,
+	  DrawShapeTrans(shape,
 	    head->t_a, head->t_b,
 	    head->t_c, head->t_d,
 	    head->t_e, head->t_f,
@@ -124,7 +124,7 @@ inline void DrawR(pointer_ifs ifs,
 	float a1,b1,c1,d1,e1,f1;
 	pointer_t trans;
 
-	DrawShapeTrans(ifs->ifs_shape->s_points,
+	DrawShapeTrans(ifs->ifs_shape,
 	  a, b, c, d, e, f,
 	  1);
 
