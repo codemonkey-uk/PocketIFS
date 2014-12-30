@@ -37,7 +37,8 @@ inline void DeleteIFS(pointer_ifs p)
 
 void DrawT(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f, clock_t limit_t)
+  float e, float f, clock_t limit_t,
+  Outp* out)
 {
 	pointer_t t,s;
 	pointer_t head,tail;
@@ -59,7 +60,7 @@ void DrawT(pointer_ifs ifs,
 	    head->t_a, head->t_b,
 	    head->t_c, head->t_d,
 	    head->t_e, head->t_f,
-	    1);
+	    out);
 
 #ifdef PROFILE
 	profile_operations
@@ -119,7 +120,8 @@ void DrawT(pointer_ifs ifs,
 
 inline void DrawR(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f, int level, bool just_leaf)
+  float e, float f, int level, bool just_leaf,
+  Outp* out)
 {
 	float a1,b1,c1,d1,e1,f1;
 	pointer_t trans;
@@ -127,7 +129,7 @@ inline void DrawR(pointer_ifs ifs,
 	if (level==0 || just_leaf==false)
 	DrawShapeTrans(ifs->ifs_shape,
 	  a, b, c, d, e, f,
-	  1);
+	  out);
 
 #ifdef PROFILE
 	profile_operations
@@ -154,7 +156,7 @@ inline void DrawR(pointer_ifs ifs,
 	    +f;
 	  DrawR(ifs,
 	    a1, b1, c1, d1, e1, f1,
-	    level-1, just_leaf);
+	    level-1, just_leaf, out);
 	  trans = trans->t_next;
 	}while(trans);
 }
@@ -165,7 +167,8 @@ inline void DrawR(pointer_ifs ifs,
 
 void Draw(pointer_ifs ifs,
   float a, float b, float c,float d,
-  float e, float f, int mode, int mode_arg, bool just_leaf)
+  float e, float f, int mode, int mode_arg, bool just_leaf,
+  Outp* out)
 {
 #ifdef PROFILE
 Profile_Start();
@@ -174,12 +177,12 @@ Profile_Start();
   if (mode == MODE_TIMED)
   {
       DrawT(ifs,a,b,c,d,e,f,
-        mode_arg);
+        mode_arg, out);
   }
   else
   {
       DrawR(ifs,a,b,c,d,e,f,
-        mode_arg, just_leaf);
+        mode_arg, just_leaf, out);
   }
 
 #ifdef PROFILE

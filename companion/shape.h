@@ -81,6 +81,16 @@ float Length(pointer_p a)
 	return l;
 }
 
+bool operator<(const p& lhs, const p& rhs)
+{
+	return lhs.p_x < rhs.p_x || (lhs.p_x == rhs.p_x && lhs.p_y < rhs.p_y);
+}
+
+bool operator!=(const p& lhs, const p& rhs)
+{
+	return lhs.p_x != rhs.p_x || lhs.p_y != rhs.p_y;
+}
+
 //shape
 struct s
 {

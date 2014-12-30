@@ -5,6 +5,8 @@
 #ifndef trans_i
 #define trans_i
 
+#include "outp.h"
+
 //trans
 struct t
 {
@@ -108,7 +110,7 @@ void DrawShapeTrans(
   pointer_s s,
   float a, float b, float c,float d,
   float e, float f,
-  int col)
+  Outp* out)
 {
   pointer_p cur;
   pointer_p nxt;
@@ -125,8 +127,7 @@ void DrawShapeTrans(
       f + s->s_cy;
 
   // initial point in line
-  int n = 1;
-  cout << x2 << "," << y2;
+  out->StartLine(x2,y2);
 
   do{
     x1=x2; y1=y2;
@@ -136,21 +137,11 @@ void DrawShapeTrans(
     y2 = nxt->p_x*c +
       nxt->p_y*d +
       f + s->s_cy;
-
-    // skip points in line on same pixel as last
-    if (x2!=x1 || y2!=y1)
-    {
-        n++;
-        cout << " " << x2 << "," << y2;
-    }
-
+    out->AddPoint(x2,y2);
     cur = nxt;
   }while((nxt = nxt->p_next));
 
-  // single pixel line (point) still needs start & end pair
-  if (n==1) cout << " " << x2 << "," << y2;
-
-  cout << endl;
+  out->EndLine();
 }
 
 /*

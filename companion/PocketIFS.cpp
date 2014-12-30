@@ -93,13 +93,17 @@ int main(int argc, char** argv)
 
     ifs = NewIFS(s,t);
 
+    Outp out;
+
     Draw(ifs,
       cos(0),
       -sin(0),
       sin(0),
       cos(0),
       0,0,
-      mode, mode_arg, just_leaf);
+      mode, mode_arg, just_leaf,
+      &out);
 
+    out.FlushLines();
     DeleteIFS(ifs);
 }
