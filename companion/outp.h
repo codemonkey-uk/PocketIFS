@@ -4,6 +4,7 @@
 #define outp_i
 
 #include <map>
+#include <vector>
 
 struct Outp
 {
@@ -63,11 +64,36 @@ struct Outp
 
     inline void FlushLines()
     {
+        std::vector<linemap::iterator> jobs;
+        jobs.reserve( lines.size() );
+
         for (linemap::iterator i=lines.begin(); i!=lines.end();++i)
+            jobs.push_back( i );
+
+        // this ordering helps start polylines at line ends
+        std::sort(jobs.begin(), jobs.end(), Compare);
+
+        for (int i=0; i!=lines.size();++i)
         {
-            while (FlushLines(i->first))
-                cout << " " << i->first.p_x << "," << i->first.p_y << endl;
+            if (FlushLines(jobs[i]->first))
+            {
+                cout << " " << jobs[i]->first.p_x << "," << jobs[i]->first.p_y << endl;
+                i=0;
+                std::sort(jobs.begin(), jobs.end(), Compare);
+            }
         }
+    }
+
+    private:
+    inline static bool IsFalse( const std::pair<p,bool>& p ){
+        return p.second == false;
+    }
+    inline static bool Compare( linemap::iterator a, linemap::iterator b )
+    {
+        int sa=std::count_if(a->second.begin(), a->second.end(), IsFalse);
+        int sb=std::count_if(b->second.begin(), b->second.end(), IsFalse);
+        // odd before even, small before large
+        return ((sa&1) > (sb&1)) || ((sa&1) == (sb&1) && sa < sb);
     }
 };
 
