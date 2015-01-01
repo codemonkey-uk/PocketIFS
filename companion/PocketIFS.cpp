@@ -4,7 +4,7 @@
 
 // TODO:
 // * Add number of iterations as argument for iterative mode
-// * Integrated SVG / output format modes / rasterised pixel output
+// * more output format modes / rasterised pixel output
 
 //config
 #define PROFILE
@@ -46,6 +46,7 @@ int main(int argc, char** argv)
     int mode = default_mode;
     int mode_arg = default_depth;
     bool just_leaf = false;
+    bool raw_points = false;
 
     // read mode and mode-argument from commandline
     int state = 0;
@@ -60,6 +61,7 @@ int main(int argc, char** argv)
             if (*c=='r' || *c=='d') mode = MODE_RECURSIVE;
             if (*c=='t') mode = MODE_TIMED;
             if (strcmp("leaf", c)==0) just_leaf = true;
+            if (strcmp("raw", c)==0) raw_points = true;
             state = mode;
         }
         else if (state == MODE_RECURSIVE)
@@ -104,6 +106,6 @@ int main(int argc, char** argv)
       mode, mode_arg, just_leaf,
       &out);
 
-    out.FlushLines();
+    out.FlushLines(!raw_points);
     DeleteIFS(ifs);
 }

@@ -33,7 +33,7 @@ struct Outp
         // no-op
     }
 
-    inline int FlushLines(p from)
+    inline int FlushLines(p from, bool svg)
     {
         linemap::iterator i = lines.find(from);
         if (i!=lines.end())
@@ -45,12 +45,16 @@ struct Outp
                     j->second=true;
                     lines[j->first][from]=true;
 
-                    int r = FlushLines(j->first);
+                    int r = FlushLines(j->first, svg);
                     if (j->first != from)
                     {
                         if (r>0)
                         {
                             cout << " ";
+                        }
+                        else if (svg)
+                        {
+                            cout << "<polyline points=\"";
                         }
                         cout << j->first.p_x << "," << j->first.p_y;
                         r++;
@@ -62,8 +66,17 @@ struct Outp
         return 0;
     }
 
-    inline void FlushLines()
+    inline void FlushLines(bool svg)
     {
+        if (svg)
+        {
+            cout << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << endl;
+            cout << "\txmlns:xlink=\"http://www.w3.org/1999/xlink\">" << endl;
+            cout << "<defs><style type=\"text/css\"><![CDATA[" << endl;
+            cout << "polyline { stroke:#000000; fill:none; stroke-width: 1 }" << endl;
+            cout << "]]></style></defs>" << endl;
+        }
+
         std::vector<linemap::iterator> jobs;
         jobs.reserve( lines.size() );
 
@@ -75,12 +88,20 @@ struct Outp
 
         for (int i=0; i!=lines.size();++i)
         {
-            if (FlushLines(jobs[i]->first))
+            if (FlushLines(jobs[i]->first, svg))
             {
-                cout << " " << jobs[i]->first.p_x << "," << jobs[i]->first.p_y << endl;
+                cout << " " << jobs[i]->first.p_x << "," << jobs[i]->first.p_y;
+                if (svg)
+                    cout << "\"/>";
+                cout << endl;
                 i=0;
                 std::sort(jobs.begin(), jobs.end(), Compare);
             }
+        }
+
+        if (svg)
+        {
+            cout << "</svg>"<< endl;
         }
     }
 
