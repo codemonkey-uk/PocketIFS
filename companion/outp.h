@@ -35,6 +35,8 @@ struct Outp
 
     inline int FlushLines(p from, bool svg)
     {
+        using std::cout;
+
         linemap::iterator i = lines.find(from);
         if (i!=lines.end())
         {
@@ -68,6 +70,8 @@ struct Outp
 
     inline void FlushLines(bool svg)
     {
+        using std::cout;
+
         int x1,y1,x2,y2;
         linemap::iterator i=lines.begin();
         x2 = x1 = i->first.p_x;

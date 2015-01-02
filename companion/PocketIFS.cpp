@@ -81,19 +81,21 @@ int main(int argc, char** argv)
     loaded = 0;
 
     std::string h;
-    h = getline(cin);
+    h = getline(std::cin);
 
-    s = ReadShapeFromCin();
+    s = ReadShapeFrom(std::cin);
     if (s){
-      t=ReadTransFromCin();
+      t=ReadTransFrom(std::cin);
       if (t) loaded = 1;
-      else DeleteShape(s);
+      else {
+        WriteShapeTo(s,cerr);
+        DeleteShape(s);
+      }
     }
 
     if (!loaded)
     {
       alert(LOADFAILMSG);
-      if (s) WriteShapeToCout(s);
       exit(-1);
     }
 

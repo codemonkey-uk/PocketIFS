@@ -58,50 +58,50 @@ void DeleteTrans(pointer_t p)
 	}while((p=t));
 }
 
-void WriteTransToCout(pointer_t p)
+void WriteTransTo(pointer_t p, std::ostream& o)
 {
   do{
-      cout << p->t_a << "\n" <<
+      o << p->t_a << "\n" <<
       p->t_b << "\n" <<
       p->t_c << "\n" <<
       p->t_d << "\n" <<
       p->t_e << "\n" <<
       p->t_f << "\n";
   }while((p = p->t_next));
-  cout << "!\n";
+  o << "!\n";
 }
 
-inline pointer_t ReadTransFromCin()
+inline pointer_t ReadTransFrom(std::istream& i)
 {
 	pointer_t head,cur;
 	string a;
 	float b,c,d,e,f;
-	cin >> a;
-	cin >> b;
-	cin >> c;
-	cin >> d;
-	cin >> e;
-	cin >> f;
+	i >> a;
+	i >> b;
+	i >> c;
+	i >> d;
+	i >> e;
+	i >> f;
 
-	if (!cin.good()) return 0;
+	if (!i.good()) return 0;
 
 	head=cur=
 	  NewTrans(atof(a.c_str()),b,c,d,e,f);
-	cin >> a;
+	i >> a;
 	while(cur && a!="!"){
-		cin >> b;
-		cin >> c;
-		cin >> d;
-		cin >> e;
-		cin >> f;
-		if (!cin.good()){
+		i >> b;
+		i >> c;
+		i >> d;
+		i >> e;
+		i >> f;
+		if (!i.good()){
 			DeleteTrans(head);
 			return 0;
 		}
 		cur->t_next=
 		  NewTrans(atof(a.c_str()),b,c,d,e,f);
 		cur=cur->t_next;
-		cin >> a;
+		i >> a;
 	}
 	return head;
 }

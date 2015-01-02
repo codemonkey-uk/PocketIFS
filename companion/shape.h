@@ -9,8 +9,6 @@
 #include <cmath>
 
 using std::endl;
-using std::cin;
-using std::cout;
 using std::string;
 
 //alternative getline function
@@ -151,44 +149,44 @@ void ELOShape(pointer_p p)
 }
 */
 
-inline void WriteShapeToCout(pointer_s s)
+inline void WriteShapeTo(pointer_s s, std::ostream& o)
 {
-	cout << s->s_cx << endl;
-	cout << s->s_cx << endl;
+	o << s->s_cx << endl;
+	o << s->s_cx << endl;
 	pointer_p cur = s->s_points;
 	do{
-		cout << cur->p_x << endl;
-		cout << cur->p_y << endl;
+		o << cur->p_x << endl;
+		o << cur->p_y << endl;
 		cur = cur->p_next;
 	}while(cur);
-	cout << "!\n";
+	o << "!\n";
 }
 
-inline pointer_s ReadShapeFromCin()
+inline pointer_s ReadShapeFrom(std::istream& i)
 {
 	pointer_p head,cur;
 	string x,y;
 	int cx, cy;
-	cx = atoi(getline(cin).c_str());
-	cy = atoi(getline(cin).c_str());
-	x = getline(cin);
-	y = getline(cin);
+	cx = atoi(getline(i).c_str());
+	cy = atoi(getline(i).c_str());
+	x = getline(i);
+	y = getline(i);
 
-	if (!cin.good()) return 0;
+	if (!i.good()) return 0;
 
 	head=cur=NewPoint(atoi(x.c_str()),atoi(y.c_str()));
 
-	x = getline(cin);
+	x = getline(i);
 	while(cur && x!="!"){
-		y = getline(cin);
-		if (!cin.good()){
+		y = getline(i);
+		if (!i.good()){
 			DeletePoint(head);
 			return 0;
 		}
 		cur->p_next=
 		  NewPoint(atoi(x.c_str()),atoi(y.c_str()));
 		cur=cur->p_next;
-		x = getline(cin);
+		x = getline(i);
 	}
 
 	pointer_s result;
