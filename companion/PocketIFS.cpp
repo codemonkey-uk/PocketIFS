@@ -91,10 +91,13 @@ int main(int argc, char** argv)
     }
 
     if (!loaded)
+    {
       alert(LOADFAILMSG);
+      if (s) WriteShapeToCout(s);
+      exit(-1);
+    }
 
     ifs = NewIFS(s,t);
-
     Outp out;
 
     Draw(ifs,

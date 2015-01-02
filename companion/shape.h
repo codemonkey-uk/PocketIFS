@@ -20,6 +20,7 @@ inline string getline(std::istream& i)
    while(i.good()){
       char c;
       i.get(c);
+      if (c=='\r') continue;
       if (i.gcount()==1 && c!='\n')
          s += c;
       else break;
@@ -168,14 +169,14 @@ inline pointer_s ReadShapeFromCin()
 	pointer_p head,cur;
 	string x,y;
 	int cx, cy;
-	cin >> cx;
-	cin >> cy;
-	cin >> x;
-	cin >> y;
+	cx = atoi(getline(cin).c_str());
+	cy = atoi(getline(cin).c_str());
+	x = getline(cin);
+	y = getline(cin);
 
 	if (!cin.good()) return 0;
 
-	head=cur=NewPoint(atoi(x.c_str()),atof(y.c_str()));
+	head=cur=NewPoint(atoi(x.c_str()),atoi(y.c_str()));
 
 	x = getline(cin);
 	while(cur && x!="!"){
@@ -185,9 +186,9 @@ inline pointer_s ReadShapeFromCin()
 			return 0;
 		}
 		cur->p_next=
-		  NewPoint(atoi(x.c_str()),atof(y.c_str()));
+		  NewPoint(atoi(x.c_str()),atoi(y.c_str()));
 		cur=cur->p_next;
-		cin >> x;
+		x = getline(cin);
 	}
 
 	pointer_s result;
