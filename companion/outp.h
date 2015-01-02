@@ -68,9 +68,27 @@ struct Outp
 
     inline void FlushLines(bool svg)
     {
+        int x1,y1,x2,y2;
+        linemap::iterator i=lines.begin();
+        x2 = x1 = i->first.p_x;
+        y2 = y1 = i->first.p_y;
+        for (; i!=lines.end();++i)
+        {
+            if (i->first.p_x > x2)
+                x2 = i->first.p_x;
+            if (i->first.p_x < x1)
+                x1 = i->first.p_x;
+            if (i->first.p_y > y2)
+                y2 = i->first.p_y;
+            if (i->first.p_y < y1)
+                y1 = i->first.p_y;
+        }
+
         if (svg)
         {
             cout << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << endl;
+            cout << "\twidth=\"" << (x2-x1) << "px\" height=\"" << (y2-y1) << "px\"" << endl;
+            cout << "\tviewBox=\"" << x1 << " " << y1 << " " << (x2-x1) << " " << (y2-y1) <<"\"" << endl;
             cout << "\txmlns:xlink=\"http://www.w3.org/1999/xlink\">" << endl;
             cout << "<defs><style type=\"text/css\"><![CDATA[" << endl;
             cout << "polyline { stroke:#000000; fill:none; stroke-width: 1 }" << endl;
