@@ -11,6 +11,9 @@ struct Outp
     typedef std::map< p, std::map<p,bool> > linemap;
     std::map< p, std::map<p,bool> > lines;
     p current;
+    std::ostream& o;
+
+    Outp(std::ostream& _o) : o(_o) {}
 
     inline void StartLine(int x, int y)
     {
@@ -35,8 +38,6 @@ struct Outp
 
     inline int FlushLines(p from, bool svg)
     {
-        using std::cout;
-
         linemap::iterator i = lines.find(from);
         if (i!=lines.end())
         {
@@ -52,13 +53,13 @@ struct Outp
                     {
                         if (r>0)
                         {
-                            cout << " ";
+                            o << " ";
                         }
                         else if (svg)
                         {
-                            cout << "<polyline points=\"";
+                            o << "<polyline points=\"";
                         }
-                        cout << j->first.p_x << "," << j->first.p_y;
+                        o << j->first.p_x << "," << j->first.p_y;
                         r++;
                     }
                     return r;
@@ -70,8 +71,6 @@ struct Outp
 
     inline void FlushLines(bool svg)
     {
-        using std::cout;
-
         int x1,y1,x2,y2;
         linemap::iterator i=lines.begin();
         x2 = x1 = i->first.p_x;
@@ -90,13 +89,13 @@ struct Outp
 
         if (svg)
         {
-            cout << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << endl;
-            cout << "\twidth=\"" << (x2-x1) << "px\" height=\"" << (y2-y1) << "px\"" << endl;
-            cout << "\tviewBox=\"" << x1 << " " << y1 << " " << (x2-x1) << " " << (y2-y1) <<"\"" << endl;
-            cout << "\txmlns:xlink=\"http://www.w3.org/1999/xlink\">" << endl;
-            cout << "<defs><style type=\"text/css\"><![CDATA[" << endl;
-            cout << "polyline { stroke:#000000; fill:none; stroke-width: 1 }" << endl;
-            cout << "]]></style></defs>" << endl;
+            o << "<svg xmlns=\"http://www.w3.org/2000/svg\"" << endl;
+            o << "\twidth=\"" << (x2-x1) << "px\" height=\"" << (y2-y1) << "px\"" << endl;
+            o << "\tviewBox=\"" << x1 << " " << y1 << " " << (x2-x1) << " " << (y2-y1) <<"\"" << endl;
+            o << "\txmlns:xlink=\"http://www.w3.org/1999/xlink\">" << endl;
+            o << "<defs><style type=\"text/css\"><![CDATA[" << endl;
+            o << "polyline { stroke:#000000; fill:none; stroke-width: 1 }" << endl;
+            o << "]]></style></defs>" << endl;
         }
 
         std::vector<linemap::iterator> jobs;
@@ -112,10 +111,10 @@ struct Outp
         {
             if (FlushLines(jobs[i]->first, svg))
             {
-                cout << " " << jobs[i]->first.p_x << "," << jobs[i]->first.p_y;
+                o << " " << jobs[i]->first.p_x << "," << jobs[i]->first.p_y;
                 if (svg)
-                    cout << "\"/>";
-                cout << endl;
+                    o << "\"/>";
+                o << endl;
                 i=0;
                 std::sort(jobs.begin(), jobs.end(), Compare);
             }
@@ -123,7 +122,7 @@ struct Outp
 
         if (svg)
         {
-            cout << "</svg>"<< endl;
+            o << "</svg>"<< endl;
         }
     }
 

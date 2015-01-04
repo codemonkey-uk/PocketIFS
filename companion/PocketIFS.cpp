@@ -100,7 +100,7 @@ int main(int argc, char** argv)
     }
 
     ifs = NewIFS(s,t);
-    Outp out;
+    Outp out(std::cout);
 
     Draw(ifs,
       cos(0),
